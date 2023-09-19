@@ -1,5 +1,6 @@
 package com.userService.service.impl;
 
+import com.userService.entity.Hotel;
 import com.userService.entity.Rating;
 import com.userService.entity.User;
 import com.userService.exception.ResurceNotFoundException;
@@ -13,7 +14,9 @@ import org.springframework.web.client.RestTemplate;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -21,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private RestTemplate restTemplate;
 
@@ -45,14 +48,30 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findById(id).orElseThrow(() -> new ResurceNotFoundException("resourse of id" + id));
         //http://localhost:8083/api/ratings/users/1
-        List<Rating> r= restTemplate.getForObject("http://localhost:8083/api/ratings/users/1", ArrayList.class);
+        Rating[] r = restTemplate.getForObject("http://localhost:8083/api/ratings/users/" + user.getId(), Rating[].class);
 
-        logger.info("{}"+r);
-        user.setRatings(r);
+        List<Rating> list = Arrays.stream(r).toList();
+        logger.info("{}" + r);
+        user.setRatings(list);
+        List<Rating> collect = list.stream().map(s -> {
+            System.out.println(s.getHotelId());
 
+            Hotel hotel = restTemplate.getForObject("http://localhost:8082/api/hotels/findByIds/" + s.getHotelId(), Hotel.class);
 
+            s.setHotel(hotel);
+            return s;
+
+        }).collect(Collectors.toList());
         return user;
     }
+
+//        //http://localhost:8082/api/hotels/findByIds/1
+//        Hotel hotel = restTemplate.getForObject("http://localhost:8082/api/hotels/findByIds/"+, Hotel.class);
+//    logger.info(" {}",hotel);
+//
+//
+//        return user;
+//    }
 
     @Override
     public User updateDetailsOfUser(long id, User user) {

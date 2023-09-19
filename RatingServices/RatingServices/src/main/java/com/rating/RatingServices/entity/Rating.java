@@ -18,4 +18,7 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ratingId;
     private String comments;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private Hotel hotel;
 }

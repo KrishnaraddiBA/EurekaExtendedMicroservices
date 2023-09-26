@@ -15,7 +15,7 @@ public class Rating {
     private long userId;
     private long hotelId;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long ratingId;
     private String comments;
     @ManyToMany(mappedBy = "ratings")

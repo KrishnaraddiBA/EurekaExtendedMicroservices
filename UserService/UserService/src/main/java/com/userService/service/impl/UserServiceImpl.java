@@ -4,6 +4,11 @@ import com.userService.entity.Hotel;
 import com.userService.entity.Rating;
 import com.userService.entity.User;
 import com.userService.exception.ResurceNotFoundException;
+
+//import com.userService.external.outsideMicroservice.HotelService;
+//import com.userService.external.outsideMicroservice.RatingService;
+import com.userService.external.outsideMicroservice.HotelService;
+import com.userService.external.outsideMicroservice.RatingService;
 import com.userService.repository.UserRepository;
 import com.userService.service.UserService;
 import org.slf4j.Logger;
@@ -23,10 +28,18 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
-
-    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private RestTemplate restTemplate;
+
+
+    @Autowired
+    private HotelService hotelService;
+
+    @Autowired
+    private RatingService ratingService;
+
+    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
     @Override
     public User saveUserDetails(User user) {
@@ -47,32 +60,34 @@ public class UserServiceImpl implements UserService {
     public User findById(long id) {
 
         User user = userRepository.findById(id).orElseThrow(() -> new ResurceNotFoundException("resourse of id" + id));
-        //http://localhost:8083/api/ratings/users/1
-        Rating[] r = restTemplate.getForObject("http://localhost:8083/api/ratings/users/" + user.getId(), Rating[].class);
+//now we use RestTemplate to get anather microservices url
 
-        List<Rating> list = Arrays.stream(r).toList();
-        logger.info("{}" + r);
-        user.setRatings(list);
-        List<Rating> collect = list.stream().map(s -> {
-            System.out.println(s.getHotelId());
+//        Rating[] ratings = restTemplate.getForObject("http://localhost:8083/api/ratings/users/"+user.getId(), Rating[].class);
+//        List<Rating> list = Arrays.stream(ratings).toList();
+//        list = list.stream().map(rating -> {
+////localhost:8082/api/hotels/findByIds/1
+//            Hotel hotel = restTemplate.getForObject("http://localhost:8082/api/hotels/findByIds/" + rating.getHotelId(), Hotel.class);
+//            rating.setHotel(hotel);
+//
+//            return rating;
+//        }).collect(Collectors.toList());
+//        user.setRatings(list);
+        //this is about how to use feign client
+                List<Rating> rates = ratingService.findAllRatings(user.getId());
+        List<Hotel> collect = rates.stream().map(rating -> {
+            Hotel byIds = hotelService.findByIds(rating.getHotelId());
+            rating.setHotel(byIds);
 
-            Hotel hotel = restTemplate.getForObject("http://localhost:8082/api/hotels/findByIds/" + s.getHotelId(), Hotel.class);
-
-            s.setHotel(hotel);
-            return s;
-
+            return byIds;
         }).collect(Collectors.toList());
+        for (Rating r1:rates) {
+            Hotel byIds = hotelService.findByIds(r1.getHotelId());
+            r1.setHotel(byIds);
+
+        }
+        user.setRatings(rates);
         return user;
     }
-
-//        //http://localhost:8082/api/hotels/findByIds/1
-//        Hotel hotel = restTemplate.getForObject("http://localhost:8082/api/hotels/findByIds/"+, Hotel.class);
-//    logger.info(" {}",hotel);
-//
-//
-//        return user;
-//    }
-
     @Override
     public User updateDetailsOfUser(long id, User user) {
 
@@ -94,3 +109,4 @@ public class UserServiceImpl implements UserService {
         return "deleted sucessfully!!!";
     }
 }
+

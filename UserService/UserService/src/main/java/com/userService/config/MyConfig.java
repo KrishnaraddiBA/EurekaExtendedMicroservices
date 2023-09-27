@@ -10,6 +10,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
@@ -23,9 +24,9 @@ public class MyConfig {
 
 
     @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+    private  ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
-    private OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
+    private  OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository;
 
     @Bean
     @LoadBalanced

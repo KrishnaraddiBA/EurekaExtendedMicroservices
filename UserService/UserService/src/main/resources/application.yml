@@ -30,23 +30,43 @@ spring:
 #      service-url:
 #        defaultZone: http://localhost:8761/eureka
 
-security:
-  oauth2:
-    resourceserver:
-        jwt:
-        issuer-uri:  https://dev-87721458.okta.com/oauth2/default
-    client:
-      registration:
-        my-internal-client:
-          provider: okta
-          authorization-grant-type: client_credentials
-          scope: internal
-          client-id: 0oabiefu1z9pvqMcB5d7
-          client-secret: GHVtQF7koiWfNR6hQ5R2_y1-nliCWbrJLjGBJGmYAMVigA8NS_VyIL6HB7UQI81I
+#  security:
+#    oauth2:
+#     resourceserver:
+#        jwt:
+#        issuer-uri: https://dev-87721458.okta.com/oauth2/default
+#    client:
+#      registration:
+#        my-internal-client:
+#          provider: okta
+#          authorization-grant-type: client_credentials
+#          scope: internal
+#          client-id: 0oabiefu1z9pvqMcB5d7
+#          client-secret: GHVtQF7koiWfNR6hQ5R2_y1-nliCWbrJLjGBJGmYAMVigA8NS_VyIL6HB7UQI81I
+#      provider:
+#        okta:
+#          issuer-uri: https://dev-87721458.okta.com/oauth2/default
 
-      provider:
-        okta:
+
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
           issuer-uri:  https://dev-87721458.okta.com/oauth2/default
+      client:
+        registration:
+          my-internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oabiefu1z9pvqMcB5d7
+            client-secret: GHVtQF7koiWfNR6hQ5R2_y1-nliCWbrJLjGBJGmYAMVigA8NS_VyIL6HB7UQI8
+
+        provider:
+          okta:
+            issuer-uri:  https://dev-87721458.okta.com/oauth2/default
+
 
 
 #circuit breaker for the ressiliance 4j springboot 2

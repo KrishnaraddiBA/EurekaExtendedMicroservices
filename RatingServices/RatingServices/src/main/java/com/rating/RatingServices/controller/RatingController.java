@@ -25,7 +25,7 @@ public class RatingController {
     }
     //localhost:8083/api/ratings/users/{userId}
 
-    @PreAuthorize("hasAuthority('SCOPE_internal') || hasAuthority('Admin')")
+//    @PreAuthorize("hasAuthority('SCOPE_internal') || hasAuthority('Admin')")
     @GetMapping("/users/{userId}")
     public ResponseEntity<List<Rating>> findAllRatings(@PathVariable("userId") long id){
         List<Rating> ratingByUser = ratingService.findRatingByUser(id);

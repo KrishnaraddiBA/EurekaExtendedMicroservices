@@ -14,6 +14,7 @@ import com.userService.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RestTemplate restTemplate;
 
+    private Logger logger=LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private HotelService hotelService;
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RatingService ratingService;
 
-    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
 
     @Override
@@ -47,6 +49,11 @@ public class UserServiceImpl implements UserService {
 
 
         return save;
+    }
+
+    @KafkaListener(topics = "Chandra",groupId = "group-1")
+    public void receiveMsg(String s){
+        logger.info("msg is {}",s);
     }
 
     @Override

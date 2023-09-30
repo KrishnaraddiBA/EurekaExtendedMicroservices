@@ -4,6 +4,7 @@ import com.rating.RatingServices.entity.Rating;
 import com.rating.RatingServices.repository.RatingRepository;
 import com.rating.RatingServices.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,9 @@ import java.util.Optional;
 public class RatingServiceImpl implements RatingService {
     @Autowired
     private RatingRepository ratingRepository;
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
     @Override
     public Rating saveRatings(Rating rating) {
         Rating save = ratingRepository.save(rating);
@@ -35,7 +39,10 @@ public class RatingServiceImpl implements RatingService {
         if (byIdsByUser.isEmpty()) {
             throw new RuntimeException("UserNotMadeAnyRatingsOrDoesNotExists");
         } else {
-            return byIdsByUser.get();
+            List<Rating> ratings = byIdsByUser.get();
+            String s = String.valueOf(ratings);
+            kafkaTemplate.send("Chandra", s);
+            return ratings;
         }
     }
 

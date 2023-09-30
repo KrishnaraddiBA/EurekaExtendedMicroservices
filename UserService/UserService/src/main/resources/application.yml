@@ -67,6 +67,15 @@ spring:
           okta:
             issuer-uri:  https://dev-87721458.okta.com/oauth2/default
 
+#kafka consumer envirment
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: group-1
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
 
 
 #circuit breaker for the ressiliance 4j springboot 2
@@ -121,3 +130,12 @@ okta:
   oauth2:
     issuer: https://dev-87721458.okta.com/oauth2/default
     audience: api://default
+
+
+#    kafka consumer envirnment
+#  spring.kafka.consumer.bootstrap-servers = localhost:9092
+#  spring.kafka.consumer.group-id= group-1
+#  spring.kafka.consumer.auto-offset-reset = earliest
+#  spring.kafka.consumer.key-deserializer= org.apache.kafka.common.serialization.StringDeserializer
+#  spring.kafka.consumer.value-deserializer = org.apache.kafka.common.serialization.StringDeserializer
+#  server.port=9090
